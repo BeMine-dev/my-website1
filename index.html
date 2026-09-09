@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopEase — Modern E-Commerce</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="light">
+
+  <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+  <button id="back-to-top" aria-label="Back to top" title="Back to top"><i class="fas fa-arrow-up"></i></button>
+  <div id="overlay" class="overlay" role="presentation"></div>
+
+  <!-- CART SIDEBAR -->
+  <aside id="cart-sidebar" class="cart-sidebar" role="dialog" aria-label="Shopping cart" aria-modal="true">
+    <div class="cart-sidebar__header">
+      <h2><i class="fas fa-shopping-bag"></i> Your Cart</h2>
+      <button id="close-cart" class="btn-icon" aria-label="Close cart"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="cart-items" class="cart-sidebar__items"></div>
+    <div class="cart-sidebar__empty" id="cart-empty">
+      <i class="fas fa-shopping-cart"></i>
+      <p>Your cart is empty</p>
+      <a href="#products" class="btn btn--primary" id="start-shopping">Start Shopping</a>
+    </div>
+    <div class="cart-sidebar__footer" id="cart-footer">
+      <div class="cart-totals">
+        <div class="cart-totals__row"><span>Subtotal</span><span id="cart-subtotal">$0.00</span></div>
+        <div class="cart-totals__row"><span>Tax (10%)</span><span id="cart-tax">$0.00</span></div>
+        <div class="cart-totals__row cart-totals__row--total"><span>Total</span><span id="cart-total">$0.00</span></div>
+      </div>
+      <div class="coupon-section">
+        <div class="coupon-input-wrap">
+          <input type="text" id="coupon-input" placeholder="Coupon code (try SAVE10)" aria-label="Coupon code" />
+          <button id="apply-coupon" class="btn btn--outline btn--sm">Apply</button>
+        </div>
+        <p id="coupon-msg" class="coupon-msg"></p>
+      </div>
+      <button class="btn btn--primary btn--full" id="checkout-btn">Proceed to Checkout <i class="fas fa-arrow-right"></i></button>
+    </div>
+  </aside>
+
+  <!-- QUICK VIEW MODAL -->
+  <div id="quick-view-modal" class="modal" role="dialog" aria-label="Product quick view" aria-modal="true">
+    <div class="modal__content">
+      <button id="close-modal" class="modal__close btn-icon" aria-label="Close modal"><i class="fas fa-times"></i></button>
+      <div class="modal__body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="header" id="header" role="banner">
+    <div class="container">
+      <div class="header__inner">
+        <a href="#" class="header__logo" aria-label="ShopEase home">
+          <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect width="34" height="34" rx="8" fill="#2A7F62"/>
+            <path d="M8 10h3l2.5 10h9l2-8H11" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="14" cy="25" r="1.5" fill="#fff"/>
+            <circle cx="22" cy="25" r="1.5" fill="#fff"/>
+          </svg>
+          <span>ShopEase</span>
+        </a>
+
+        <div class="header__search" role="search">
+          <input type="search" id="search-input" class="search-input" placeholder="Search products, categories…" aria-label="Search products" autocomplete="off" />
+          <button class="search-btn" aria-label="Search"><i class="fas fa-search"></i></button>
+        </div>
+
+        <nav class="header__nav" aria-label="Main navigation">
+          <ul role="list">
+            <li><a href="#" class="nav-link active">Home</a></li>
+            <li><a href="#products" class="nav-link">Shop</a></li>
+            <li><a href="#categories" class="nav-link">Categories</a></li>
+            <li><a href="#newsletter" class="nav-link">Deals</a></li>
+          </ul>
+        </nav>
+
+        <div class="header__actions">
+          <button id="theme-toggle" class="btn-icon" aria-label="Toggle dark mode" title="Toggle dark mode"><i class="fas fa-moon"></i></button>
+          <button class="btn-icon" aria-label="User account"><i class="fas fa-user"></i></button>
+          <button class="btn-icon wishlist-btn" id="wishlist-icon-btn" aria-label="Wishlist">
+            <i class="fas fa-heart"></i>
+            <span class="badge" id="wishlist-badge" aria-label="Wishlist count">0</span>
+          </button>
+          <button class="btn-icon cart-btn" id="cart-toggle-btn" aria-label="Open shopping cart">
+            <i class="fas fa-shopping-bag"></i>
+            <span class="badge" id="cart-badge" aria-label="Cart item count">0</span>
+          </button>
+          <button class="hamburger" id="hamburger" aria-label="Toggle mobile menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+
+      <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation" hidden>
+        <ul role="list">
+          <li><a href="#" class="nav-link">Home</a></li>
+          <li><a href="#products" class="nav-link">Shop</a></li>
+          <li><a href="#categories" class="nav-link">Categories</a></li>
+          <li><a href="#newsletter" class="nav-link">Deals</a></li>
+        </ul>
+        <div class="mobile-search" role="search">
+          <input type="search" id="mobile-search-input" placeholder="Search products…" aria-label="Search products" autocomplete="off" />
+          <button class="search-btn" aria-label="Search"><i class="fas fa-search"></i></button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+
+    <!-- HERO -->
+    <section class="hero" aria-label="Hero banner">
+      <div class="hero__bg"></div>
+      <div class="container">
+        <div class="hero__content">
+          <span class="hero__badge">New Season Arrivals</span>
+          <h1 class="hero__title">Summer Sale<br /><span class="accent">Up to 50% Off</span></h1>
+          <p class="hero__subtitle">Discover thousands of products at unbeatable prices. Shop the latest trends in electronics, fashion, beauty &amp; more.</p>
+          <div class="hero__cta">
+            <a href="#products" class="btn btn--primary btn--lg">Shop Now <i class="fas fa-arrow-right"></i></a>
+            <a href="#categories" class="btn btn--outline btn--lg">Browse Categories</a>
+          </div>
+          <div class="hero__stats">
+            <div class="hero__stat"><strong>50K+</strong><span>Products</span></div>
+            <div class="hero__stat"><strong>120K+</strong><span>Customers</span></div>
+            <div class="hero__stat"><strong>4.9★</strong><span>Rating</span></div>
+          </div>
+        </div>
+        <div class="hero__visual" aria-hidden="true">
+          <div class="hero__image-wrap">
+            <img src="https://picsum.photos/seed/hero-main/520/480" alt="Featured products showcase" class="hero__img" loading="eager" />
+            <div class="hero__floating-card hero__floating-card--1">
+              <i class="fas fa-star text-yellow"></i>
+              <div><strong>Best Seller</strong><small>Wireless Headphones</small></div>
+            </div>
+            <div class="hero__floating-card hero__floating-card--2">
+              <i class="fas fa-tag text-green"></i>
+              <div><strong>50% OFF</strong><small>Limited Time</small></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRUST BADGES -->
+    <section class="trust-badges" aria-label="Store guarantees">
+      <div class="container">
+        <div class="trust-badges__grid">
+          <div class="trust-badge"><i class="fas fa-truck-fast"></i><div><strong>Free Shipping</strong><small>On orders over $50</small></div></div>
+          <div class="trust-badge"><i class="fas fa-rotate-left"></i><div><strong>Easy Returns</strong><small>30-day return policy</small></div></div>
+          <div class="trust-badge"><i class="fas fa-shield-halved"></i><div><strong>Secure Payment</strong><small>100% protected</small></div></div>
+          <div class="trust-badge"><i class="fas fa-headset"></i><div><strong>24/7 Support</strong><small>Always here to help</small></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CATEGORIES -->
+    <section class="categories section" id="categories" aria-labelledby="categories-heading">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <span class="section-badge">What are you looking for?</span>
+            <h2 id="categories-heading" class="section-title">Shop by Category</h2>
+          </div>
+          <a href="#products" class="btn btn--outline btn--sm">View All</a>
+        </div>
+        <div class="categories__grid" id="categories-grid" role="list"></div>
+      </div>
+    </section>
+
+    <!-- PRODUCTS -->
+    <section class="products section" id="products" aria-labelledby="products-heading">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <span class="section-badge">Hand-picked for you</span>
+            <h2 id="products-heading" class="section-title">Featured Products</h2>
+          </div>
+          <div class="products__controls">
+            <select id="sort-select" class="select" aria-label="Sort products">
+              <option value="default">Sort: Default</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              <option value="rating">Highest Rated</option>
+              <option value="name">Name A–Z</option>
+            </select>
+          </div>
+        </div>
+        <div class="filter-pills" id="filter-pills" role="tablist" aria-label="Filter by category">
+          <button class="pill pill--active" data-category="all" role="tab" aria-selected="true">All</button>
+        </div>
+        <div class="products__grid" id="products-grid" role="list" aria-live="polite" aria-label="Product listing"></div>
+        <div id="no-results" class="no-results" hidden aria-live="polite">
+          <i class="fas fa-search"></i>
+          <h3>No products found</h3>
+          <p>Try a different keyword or category.</p>
+          <button class="btn btn--primary" id="clear-search">Clear Search</button>
+        </div>
+        <div class="products__load-more" id="load-more-wrap">
+          <button class="btn btn--outline" id="load-more-btn">Load More Products <i class="fas fa-chevron-down"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROMO BANNER -->
+    <section class="promo-banner section" aria-label="Special offer">
+      <div class="container">
+        <div class="promo-banner__inner">
+          <div class="promo-banner__text">
+            <span class="section-badge section-badge--light">Limited Time Offer</span>
+            <h2>Get <span class="accent">20% Off</span> Your First Order</h2>
+            <p>Use code <strong>WELCOME20</strong> at checkout. Valid for new customers only.</p>
+            <a href="#products" class="btn btn--white btn--lg">Claim Offer</a>
+          </div>
+          <div class="promo-banner__visual" aria-hidden="true">
+            <div class="promo-badge">
+              <span class="promo-badge__percent">20</span>
+              <span class="promo-badge__off">% OFF</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEWSLETTER -->
+    <section class="newsletter section" id="newsletter" aria-labelledby="newsletter-heading">
+      <div class="container">
+        <div class="newsletter__inner">
+          <div class="newsletter__icon" aria-hidden="true"><i class="fas fa-envelope-open-text"></i></div>
+          <h2 id="newsletter-heading">Stay in the Loop</h2>
+          <p>Subscribe to get exclusive deals, new arrivals, and early sale access delivered straight to your inbox.</p>
+          <form class="newsletter__form" id="newsletter-form" novalidate aria-label="Newsletter subscription form">
+            <div class="newsletter__input-wrap">
+              <input type="email" id="newsletter-email" placeholder="Enter your email address" aria-label="Email address" required />
+              <button type="submit" class="btn btn--primary">Subscribe <i class="fas fa-paper-plane"></i></button>
+            </div>
+            <p class="newsletter__note"><i class="fas fa-lock"></i> No spam, ever. Unsubscribe anytime.</p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__col footer__col--brand">
+          <a href="#" class="footer__logo" aria-label="ShopEase home">
+            <svg width="28" height="28" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect width="34" height="34" rx="8" fill="#2A7F62"/>
+              <path d="M8 10h3l2.5 10h9l2-8H11" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="14" cy="25" r="1.5" fill="#fff"/>
+              <circle cx="22" cy="25" r="1.5" fill="#fff"/>
+            </svg>
+            <span>ShopEase</span>
+          </a>
+          <p class="footer__tagline">Your go-to destination for quality products at honest prices. Shop smart, live better.</p>
+          <div class="footer__social" aria-label="Social media links">
+            <a href="#" aria-label="Facebook" class="social-link"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" aria-label="Instagram" class="social-link"><i class="fab fa-instagram"></i></a>
+            <a href="#" aria-label="Twitter" class="social-link"><i class="fab fa-x-twitter"></i></a>
+            <a href="#" aria-label="YouTube" class="social-link"><i class="fab fa-youtube"></i></a>
+            <a href="#" aria-label="Pinterest" class="social-link"><i class="fab fa-pinterest-p"></i></a>
+          </div>
+        </div>
+        <div class="footer__col">
+          <h3 class="footer__heading">Quick Links</h3>
+          <ul class="footer__links" role="list">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Affiliate Program</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h3 class="footer__heading">Categories</h3>
+          <ul class="footer__links" role="list">
+            <li><a href="#" data-filter="electronics">Electronics</a></li>
+            <li><a href="#" data-filter="fashion">Fashion</a></li>
+            <li><a href="#" data-filter="home">Home &amp; Living</a></li>
+            <li><a href="#" data-filter="beauty">Beauty</a></li>
+            <li><a href="#" data-filter="sports">Sports</a></li>
+            <li><a href="#" data-filter="books">Books</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h3 class="footer__heading">Contact Us</h3>
+          <ul class="footer__contact" role="list">
+            <li><i class="fas fa-map-marker-alt" aria-hidden="true"></i><span>123 Commerce St, San Francisco, CA 94103</span></li>
+            <li><i class="fas fa-phone" aria-hidden="true"></i><a href="tel:+14155551234">+1 (415) 555-1234</a></li>
+            <li><i class="fas fa-envelope" aria-hidden="true"></i><a href="mailto:hello@shopease.com">hello@shopease.com</a></li>
+            <li><i class="fas fa-clock" aria-hidden="true"></i><span>Mon–Sat: 9 AM – 6 PM PST</span></li>
+          </ul>
+          <div class="footer__payment" aria-label="Accepted payment methods">
+            <i class="fab fa-cc-visa" aria-label="Visa"></i>
+            <i class="fab fa-cc-mastercard" aria-label="Mastercard"></i>
+            <i class="fab fa-cc-paypal" aria-label="PayPal"></i>
+            <i class="fab fa-cc-apple-pay" aria-label="Apple Pay"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <div class="container">
+        <p>&copy; <span id="footer-year"></span> ShopEase. All rights reserved. Made with <i class="fas fa-heart text-red"></i> for great shopping.</p>
+        <div class="footer__bottom-links">
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/script.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
